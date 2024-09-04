@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="generator-input-field" class="form-control" type="text">
+                    <button id="generate-button" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="inputField" class="form-control" type="text" name="name">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div class="button" id="seven" onclick="calculatorNumber('seven')">7</div>
+                              <div class="button" id="eight" onclick="calculatorNumber('eight')" >8</div>
+                              <div class="button" id="nine" onclick="calculatorNumber('nine')">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" id="four" onclick="calculatorNumber('four')">4</div>
+                              <div class="button" id="five" onclick="calculatorNumber('five')">5</div>
+                              <div class="button" id="six" onclick="calculatorNumber('six')">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" id="one" onclick="calculatorNumber('one')">1</div>
+                              <div class="button" id="two" onclick="calculatorNumber('two')">2</div>
+                              <div class="button" id="three" onclick="calculatorNumber('three')">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button" id="removeLastDigit"><</div>
+                                <div class="button" id="zero" onclick="calculatorNumber('zero')">0</div>
+                                <div class="button" id="clear">C</div>
+                            </div>
+                            <div>
+                                <button type="submit" class="submit-btn" id="submit">Submit</button>
+                                <p class="action-left"><span id="countDown">3</span> <span id="countDownText">try left</span></p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p class="notify" id="wrong">❌ Pin Didn't Match, Please try again</p>
+            <p class="notify" id="right">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+
+
+
+    <script>
+        
+        // Random Number Generator
+        let generatorButton = document.getElementById("generate-button");
+        generatorButton.addEventListener("click",function(){
+           let getRandomNumber = function(minimumNumber , maximumNumber){
+               let randomNumber = Math.floor((Math.random()*maximumNumber)+minimumNumber);
+               while(randomNumber > maximumNumber){
+                randomNumber = Math.floor((Math.random()*maximumNumber)+minimumNumber);
+               }
+               return randomNumber;
+           }
+
+           let generatorPin = getRandomNumber(1000,9999);
+           let generatorInputField = document.getElementById("generator-input-field").value = generatorPin;
+           
+           document.getElementById("right").style.display = "none";
+           document.getElementById("wrong").style.display = "none";
+        })
+        
+        // Write Generator Pin
+        function calculatorNumber(id){
+           let finalNumber =(document.getElementById("inputField").value += document.getElementById(id).innerText);
+           let finalValue = parseFloat(finalNumber);
+           return finalValue;
+        }
+
+        // Clear Number
+        let clear = document.getElementById("clear");
+        clear.addEventListener("click",function(){
+            document.getElementById("inputField").value = "";
+        })
+
+        // Remove Last Digit
+        let removeLastDigit = document.getElementById("removeLastDigit");
+        removeLastDigit.addEventListener("click",function(){
+            let inputValue = document.getElementById("inputField").value;
+            
+            document.getElementById("inputField").value = inputValue.substring(0,inputValue.length-1);
+        })
+
+        // Press Submit Button
+        let submit = document.getElementById("submit");
+        submit.addEventListener("click",function(){
+        let generatorInputFieldNumber = parseFloat(document.getElementById("generator-input-field").value);
+        let inputNumber = parseFloat(document.getElementById("inputField").value);
+        document.getElementById("right").style.display = "none";
+
+        if(generatorInputFieldNumber == inputNumber){
+            document.getElementById("right").style.display = "block";
+            document.getElementById("generator-input-field").value = "";
+            document.getElementById("inputField").value = "";
+            document.getElementById("countDown").innerText = 3;
+        }
+        else{
+            document.getElementById("wrong").style.display = "block";
+            document.getElementById("generator-input-field").value = "";
+            document.getElementById("inputField").value = "";
+            let countDown = parseFloat(document.getElementById("countDown").innerText);
+            let NewCount = countDown - 1;
+            document.getElementById("countDown").innerText = NewCount;
+            if(document.getElementById("countDown").innerText == "0"){
+                document.getElementById("submit").style.display="none";
+                document.getElementById("countDown").innerText = "You Are Blocked.";
+                document.getElementById("countDownText").innerText = "Reload & Try Again.";
+                document.getElementById("generate-button").innerText = "Blocked";
+                document.getElementById("generator-input-field").style.display = "none";
+            }
+        }
+    })
+    </script>
+</body>
+</html>
